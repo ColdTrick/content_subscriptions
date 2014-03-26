@@ -31,14 +31,12 @@ function content_subscriptions_check_subscription($entity_guid, $user_guid = 0) 
 /**
  * Subscribe a user to the updates of an entity
  *
- * @param int  $entity_guid    the content entity to subscribe to
- * @param int  $user_guid      the user to subscribe (defaults to current user)
+ * @param int $entity_guid the content entity to subscribe to
+ * @param int $user_guid   the user to subscribe (defaults to current user)
  *
  * @return bool
  */
 function content_subscriptions_subscribe($entity_guid, $user_guid = 0) {
-	$result = false;
-	
 	$entity_guid = sanitise_int($entity_guid, false);
 	$user_guid = sanitise_int($user_guid, false);
 	
@@ -63,8 +61,8 @@ function content_subscriptions_subscribe($entity_guid, $user_guid = 0) {
 /**
  * Automaticly subscribe to the updates of an entity if the user didn't block this
  *
- * @param int  $entity_guid    the content entity to subscribe to
- * @param int  $user_guid      the user to subscribe (defaults to current user)
+ * @param int $entity_guid the content entity to subscribe to
+ * @param int $user_guid   the user to subscribe (defaults to current user)
  *
  * @return bool
  */

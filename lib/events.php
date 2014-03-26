@@ -49,7 +49,7 @@ function content_subscriptions_create_annotation_handler($event, $type, ElggAnno
 							SELECT guid_one
 							FROM " . elgg_get_config("dbprefix") . "entity_relationships
 							WHERE guid_two = " . $entity->getContainerGUID() . "
-							AND relationship IN ('" . implode("", "", $methods) . "')
+							AND relationship IN ('" . implode("", $methods) . "')
 					)";
 					
 					$options["wheres"][] = $notification_where;

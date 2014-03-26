@@ -4,6 +4,7 @@
  */
 
 /**
+ * Route hook to make sure we can extend the correct sidebar and have some more information
  *
  * @param string $hook         'route'
  * @param string $type         the supported 'correct' page handlers
