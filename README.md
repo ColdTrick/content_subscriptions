@@ -8,3 +8,8 @@ Features
 
 - Automaticly follow a discussion on your first comment
 - Subscribe to a discussion to get notifications about new comments
+
+ToDo
+----
+
+- Extend to more content types (eg blogs, files, etc)
