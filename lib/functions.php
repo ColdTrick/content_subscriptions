@@ -78,8 +78,13 @@ function content_subscriptions_autosubscribe($entity_guid, $user_guid = 0) {
 	
 	// check if the user blocked the subscription
 	if (!check_entity_relationship($user_guid, CONTENT_SUBCRIPTIONS_BLOCK, $entity_guid)) {
-		// no, so subscribe
-		$result = content_subscriptions_subscribe($entity_guid, $user_guid);
+		$entity = get_entity($entity_guid);
+		
+		// check if this is not the content owner
+		if ($entity->getOwnerGUID() != $user_guid) {
+			// no, so subscribe
+			$result = content_subscriptions_subscribe($entity_guid, $user_guid);
+		}
 	}
 	
 	return $result;
