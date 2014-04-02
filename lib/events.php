@@ -54,6 +54,25 @@ function content_subscriptions_create_annotation_handler($event, $type, ElggAnno
 					
 					$options["wheres"][] = $notification_where;
 					
+					// check access limitations
+					switch ($entity->access_id) {
+						case ACCESS_FRIENDS:
+							// this shouldn't happen, so do nothing
+							break;
+						case ACCESS_LOGGED_IN:
+						case ACCESS_PUBLIC:
+							// all users are allowed
+							break;
+						default:
+							// this is an ACL
+							$acl_members = get_members_of_access_collection($entity->access, true);
+							
+							if (!empty($acl_members)) {
+								$options["wheres"][] = "(e.guid IN (" . implode(",", $acl_members) . "))";
+							}
+							break;
+					}
+					
 					// proccess users
 					$users = new ElggBatch("elgg_get_entities_from_relationship", $options);
 					
