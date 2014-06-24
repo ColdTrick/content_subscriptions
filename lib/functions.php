@@ -128,9 +128,12 @@ function content_subscriptions_unsubscribe($entity_guid, $user_guid = 0) {
  * @return bool
  */
 function content_subscriptions_check_notification_settings(ElggEntity $container, $user_guid = 0) {
-	global $NOTIFICATION_HANDLERS;
+	static $NOTIFICATION_HANDLERS;
+	static $user_cache;
 	
-	$result = false;
+	if (!isset($NOTIFICATION_HANDLERS)) {
+		$NOTIFICATION_HANDLERS = _elgg_services()->notifications->getMethods();
+	}
 	
 	$user_guid = sanitise_int($user_guid, false);
 	
@@ -141,14 +144,86 @@ function content_subscriptions_check_notification_settings(ElggEntity $container
 	// only check groups
 	if (!empty($container) && elgg_instanceof($container, "group") && !empty($user_guid)) {
 		
-		// check all notification handlers, if one is selected return true
-		foreach ($NOTIFICATION_HANDLERS as $method => $foo) {
-			if (check_entity_relationship($user_guid, "notify" . $method, $container->getGUID())) {
-				$result = true;
-				break;
+		if (!isset($user_cache[$container->getGUID()])) {
+			$user_cache[$container->getGUID()] = array();
+		}
+		
+		if (!isset($user_cache[$container->getGUID()][$user_guid])) {
+			$user_cache[$container->getGUID()][$user_guid] = false;
+			
+			// check all notification handlers, if one is selected return true
+			foreach ($NOTIFICATION_HANDLERS as $method => $foo) {
+				if (check_entity_relationship($user_guid, "notify" . $method, $container->getGUID())) {
+					$user_cache[$container->getGUID()][$user_guid] = true;
+					break;
+				}
+			}
+		}
+		
+		return $user_cache[$container->getGUID()][$user_guid];
+	}
+	
+	return false;
+}
+
+/**
+ * Checks if a user can subscribe to a content item
+ *
+ * @param ElggEntity $entity    the entity to check
+ * @param int        $user_guid the user to check (default: current user)
+ *
+ * @return bool
+ */
+function content_subscriptions_can_subscribe(ElggEntity $entity, $user_guid = 0) {
+	$result = false;
+	
+	$user_guid = sanitise_int($user_guid, false);
+	if (empty($user_guid)) {
+		$user_guid = elgg_get_logged_in_user_guid();
+	}
+	
+	if (!empty($user_guid) && !empty($entity) && elgg_instanceof($entity)) {
+		if (($entity->getOwnerGUID() != $user_guid) && !content_subscriptions_check_notification_settings($entity->getContainerEntity(), $user_guid)) {
+			$supported_entity_types = content_subscriptions_get_supported_entity_types();
+			
+			if (!empty($supported_entity_types)) {
+				$type = $entity->getType();
+				
+				if (isset($supported_entity_types[$type])) {
+					$subtype = $entity->getSubtype();
+					if (!empty($subtype)) {
+						$result = in_array($subtype, $supported_entity_types[$type]);
+					} else {
+						$result = true;
+					}
+				}
 			}
 		}
 	}
 	
 	return $result;
+}
+
+/**
+ * Get an array of the supported entity types/subtypes for subscriptions
+ *
+ * @return array
+ */
+function content_subscriptions_get_supported_entity_types() {
+	$result = array(
+		"object" => array(
+			"groupforumtopic",
+			"blog",
+			"file",
+			"page_top",
+			"page",
+			"bookmark"
+		)
+	);
+	
+	$params = array(
+		"defaults" => $result
+	);
+	
+	return elgg_trigger_plugin_hook("entity_types", "content_subscriptions", $params, $result);
 }

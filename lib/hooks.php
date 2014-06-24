@@ -32,3 +32,37 @@ function content_subscriptions_default_route_hook($hook, $type, $return_value, $
 		}
 	}
 }
+
+/**
+ * Add a subscribe/unsubscribe link to the supported entity types
+ *
+ * @param string         $hook         'register'
+ * @param string         $type         'menu:entity'
+ * @param ElggMenuItem[] $return_value the current menu items
+ * @param array          $params       supplied params
+ *
+ * @return ElggMenuItem[]
+ */
+function content_subscriptions_register_entity_menu_hook($hook, $type, $return_value, $params) {
+	
+	if (!empty($params) && is_array($params)) {
+		$entity = elgg_extract("entity", $params);
+		
+		if (!empty($entity) && content_subscriptions_can_subscribe($entity)) {
+			$text = elgg_echo("content_subscriptions:subscribe");
+			if (content_subscriptions_check_subscription($entity->getGUID())) {
+				$text = elgg_echo("content_subscriptions:unsubscribe");
+			}
+			
+			$return_value[] = ElggMenuItem::factory(array(
+				"name" => "content_subscription",
+				"text" => $text,
+				"href" => "action/content_subscriptions/subscribe?entity_guid=" . $entity->getGUID(),
+				"is_action" => true,
+				"priority" => 100
+			));
+		}
+	}
+	
+	return $return_value;
+}
