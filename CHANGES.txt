@@ -5,6 +5,7 @@ Version History
 
 - changes for Elgg 1.9
 - added: support for more entity types
+- changed: ajaxified the content subscription sidebar
 
 1.0:
 

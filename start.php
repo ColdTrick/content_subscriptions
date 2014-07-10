@@ -20,6 +20,9 @@ elgg_register_event_handler("init", "system", "content_subscriptions_init");
  */
 function content_subscriptions_init() {
 	
+	// JS
+	elgg_extend_view("js/elgg", "js/content_subscriptions/site");
+	
 	// register event handlers
 	elgg_register_event_handler("create", "object", "content_subscriptions_create_object_handler");
 	
