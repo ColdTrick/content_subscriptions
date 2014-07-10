@@ -18,6 +18,19 @@ elgg.content_subscriptions.init = function() {
 
 		return false;
 	});
+
+	$(".elgg-menu-item-content-subscription > a").on("click", function() {
+
+		var $link = $(this);
+
+		elgg.action($link.attr("href"), {
+			success: function(data) {
+				$link.find("> span").toggleClass("elgg-icon-round-plus elgg-icon-round-plus-hover");
+			}
+		});
+		
+		return false;
+	});
 }
 
 //register init hook
