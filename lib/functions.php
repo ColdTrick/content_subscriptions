@@ -183,7 +183,8 @@ function content_subscriptions_can_subscribe(ElggEntity $entity, $user_guid = 0)
 	}
 	
 	if (!empty($user_guid) && !empty($entity) && elgg_instanceof($entity)) {
-		if (($entity->getOwnerGUID() != $user_guid) && !content_subscriptions_check_notification_settings($entity->getContainerEntity(), $user_guid)) {
+		$container = $entity->getContainerEntity();
+		if (($entity->getOwnerGUID() != $user_guid) && (empty($container) || !content_subscriptions_check_notification_settings($container, $user_guid))) {
 			$supported_entity_types = content_subscriptions_get_supported_entity_types();
 			
 			if (!empty($supported_entity_types)) {
