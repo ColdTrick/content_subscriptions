@@ -25,7 +25,11 @@ elgg.content_subscriptions.init = function() {
 
 		elgg.action($link.attr("href"), {
 			success: function(data) {
-				$link.find("> span").toggleClass("elgg-icon-round-plus elgg-icon-round-plus-hover");
+				if ($link.html() == elgg.echo("content_subscriptions:subscribe")) {
+					$link.html(elgg.echo("content_subscriptions:unsubscribe"));
+				} else {
+					$link.html(elgg.echo("content_subscriptions:subscribe"));
+				}
 			}
 		});
 		
