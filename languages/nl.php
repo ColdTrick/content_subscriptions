@@ -1,5 +1,17 @@
 <?php
+/**
+ * This file was created by Translation Editor v2.0
+ * On 2014-07-17 09:18
+ */
+
 $language = array (
+  'content_subscriptions:generic_comment:subject' => 'Nieuwe reactie op: %s',
+  'content_subscriptions:generic_comment:body' => '%s reageerde op %s:
+
+%s
+
+Bekijk en reageer hier:
+%s',
   'content_subscriptions:subscribe' => 'Volgen',
   'content_subscriptions:unsubscribe' => 'Ontvolgen',
   'content_subscriptions:sidebar:title' => 'Blijf op de hoogte',
