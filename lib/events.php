@@ -54,7 +54,7 @@ function content_subscriptions_upgrade_system_handler($event, $type, $object) {
 		if (!$upgrade->getUpgradeFromPath($path)) {
 			$upgrade->setPath($path);
 			$upgrade->title = "Content Subscription upgrade";
-			$upgrade->description= "The way content subscriptions are handled has changed. Run this script to make sure all content subscriptions are migrated.";
+			$upgrade->description = "The way content subscriptions are handled has changed. Run this script to make sure all content subscriptions are migrated.";
 			
 			$upgrade->save();
 		}
