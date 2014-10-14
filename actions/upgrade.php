@@ -34,8 +34,10 @@ $original_events = _elgg_services()->events;
 $original_hooks = _elgg_services()->hooks;
 _elgg_services()->events = new Elgg_EventsService();
 _elgg_services()->hooks = new Elgg_PluginHooksService();
+
 elgg_register_plugin_hook_handler("permissions_check", "all", "elgg_override_permissions");
 elgg_register_plugin_hook_handler("container_permissions_check", "all", "elgg_override_permissions");
+_elgg_services()->db->disableQueryCache();
 
 $success_count = 0;
 $error_count = 0;
@@ -67,7 +69,7 @@ while ((microtime(true) - $START_MICROTIME) < $batch_run_time_in_secs) {
 	
 	$users = elgg_get_entities_from_relationship($options);
 	foreach ($users as $user) {
-		$removed_counter = 0;
+		$error_counter = 0;
 		
 		$subscription_options = array(
 			"relationship" => CONTENT_SUBSCRIPTIONS_SUBSCRIPTION,
@@ -81,8 +83,8 @@ while ((microtime(true) - $START_MICROTIME) < $batch_run_time_in_secs) {
 			
 			// for some reason you can't subscribe
 			if (!content_subscriptions_can_subscribe($entity, $user->getGUID())) {
-				if (remove_entity_relationship($user->getGUID(), CONTENT_SUBSCRIPTIONS_SUBSCRIPTION, $entity->getGUID())) {
-					$removed_counter++;
+				if (!remove_entity_relationship($user->getGUID(), CONTENT_SUBSCRIPTIONS_SUBSCRIPTION, $entity->getGUID())) {
+					$error_counter++;
 				}
 				
 				continue;
@@ -92,15 +94,15 @@ while ((microtime(true) - $START_MICROTIME) < $batch_run_time_in_secs) {
 			content_subscriptions_subscribe($entity->getGUID(), $user->getGUID());
 			
 			// remove old link
-			if (remove_entity_relationship($user->getGUID(), CONTENT_SUBSCRIPTIONS_SUBSCRIPTION, $entity->getGUID())) {
-				$removed_counter++;
+			if (!remove_entity_relationship($user->getGUID(), CONTENT_SUBSCRIPTIONS_SUBSCRIPTION, $entity->getGUID())) {
+				$error_counter++;
 			}
 		}
 		
-		if ($removed_counter > 0) {
-			$success_count++;
-		} else {
+		if ($error_counter > 0) {
 			$error_count++;
+		} else {
+			$success_count++;
 		}
 	}
 }
@@ -110,6 +112,7 @@ access_show_hidden_entities($access_status);
 // replace events and hooks
 _elgg_services()->events = $original_events;
 _elgg_services()->hooks = $original_hooks;
+_elgg_services()->db->enableQueryCache();
 
 // Give some feedback for the UI
 echo json_encode(array(
