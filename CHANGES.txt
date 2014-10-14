@@ -4,8 +4,8 @@ Version History
 2.0:
 
 - changes for Elgg 1.9
+- rewrote the entire plugin to use the new Elgg subscriptions system
 - added: support for more entity types
-- changed: ajaxified the content subscription sidebar
 
 1.0:
 

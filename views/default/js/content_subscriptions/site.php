@@ -5,6 +5,8 @@
 elgg.provide("elgg.content_subscriptions");
 
 elgg.content_subscriptions.init = function() {
+
+	elgg.ui.registerTogglableMenuItems("content-subscription-subscribe", "content-subscription-unsubscribe");
 	
 	$("form.elgg-form-content-subscriptions-subscribe").on("submit", function() {
 		var $form = $(this);
@@ -16,23 +18,6 @@ elgg.content_subscriptions.init = function() {
 			}
 		});
 
-		return false;
-	});
-
-	$(".elgg-menu-item-content-subscription > a").on("click", function() {
-
-		var $link = $(this);
-
-		elgg.action($link.attr("href"), {
-			success: function(data) {
-				if ($link.html() == elgg.echo("content_subscriptions:subscribe")) {
-					$link.html(elgg.echo("content_subscriptions:unsubscribe"));
-				} else {
-					$link.html(elgg.echo("content_subscriptions:subscribe"));
-				}
-			}
-		});
-		
 		return false;
 	});
 }
