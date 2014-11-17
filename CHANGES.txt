@@ -1,11 +1,14 @@
 Version History
 ===============
 
-2.0:
+2.0 (2014-11-17):
 
 - changes for Elgg 1.9
 - rewrote the entire plugin to use the new Elgg subscriptions system
 - added: support for more entity types
+- fix(php): php warning is some cases is
+- fix(js): change the correct toggle values
+- changed(ui): ajaxified the content subscription sidebar
 
 1.0:
 
