@@ -69,7 +69,7 @@ function content_subscriptions_register_entity_menu_hook($hook, $type, $return_v
  */
 function content_subscriptions_prepare_comment_notification($hook, $type, $return_value, $params) {
 	
-	if (empty($return_value) || !($return_value instanceof Elgg_Notifications_Notification)) {
+	if (empty($return_value) || !($return_value instanceof \Elgg\Notifications\Notification)) {
 		return $return_value;
 	}
 	
@@ -78,7 +78,7 @@ function content_subscriptions_prepare_comment_notification($hook, $type, $retur
 	}
 	
 	$event = elgg_extract("event", $params);
-	if (empty($event) || !($event instanceof Elgg_Notifications_Event)) {
+	if (empty($event) || !($event instanceof \Elgg\Notifications\Event)) {
 		return $return_value;
 	}
 	
@@ -129,7 +129,7 @@ function content_subscriptions_get_subscriptions_verify_hook($hook, $type, $retu
 	}
 	
 	$event = elgg_extract("event", $params);
-	if (empty($event) || !($event instanceof Elgg_Notifications_Event)) {
+	if (empty($event) || !($event instanceof \Elgg\Notifications\Event)) {
 		return $return_value;
 	}
 	
@@ -172,7 +172,7 @@ function content_subscriptions_get_subscriptions_group_check_hook($hook, $type, 
 	}
 	
 	$event = elgg_extract("event", $params);
-	if (empty($event) || !($event instanceof Elgg_Notifications_Event)) {
+	if (empty($event) || !($event instanceof \Elgg\Notifications\Event)) {
 		return $return_value;
 	}
 	

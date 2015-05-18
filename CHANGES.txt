@@ -1,6 +1,10 @@
 Version History
 ===============
 
+3.0
+
+- changes for Elgg 1.10
+
 2.0 (2014-11-17):
 
 - changes for Elgg 1.9
