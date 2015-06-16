@@ -26,7 +26,7 @@ function content_subscriptions_check_subscription($entity_guid, $user_guid = 0, 
 	}
 	
 	// check if we didn't block subscription
-	if (check_entity_relationship($user_guid, CONTENT_SUBSCRIPTIONS_BLOCK, $entity_guid)) {
+	if (content_subscriptions_check_block_subscription($entity_guid, $user_guid)) {
 		return false;
 	}
 	
@@ -111,7 +111,7 @@ function content_subscriptions_autosubscribe($entity_guid, $user_guid = 0) {
 	}
 	
 	// check if the user blocked the subscription
-	if (!check_entity_relationship($user_guid, CONTENT_SUBSCRIPTIONS_BLOCK, $entity_guid)) {
+	if (!content_subscriptions_check_block_subscription($entity_guid, $user_guid)) {
 		$entity = get_entity($entity_guid);
 		
 		// check if this is not the content owner
@@ -145,11 +145,13 @@ function content_subscriptions_unsubscribe($entity_guid, $user_guid = 0) {
 		return false;
 	}
 	
+	// check if we have a subscription
+	$sub = content_subscriptions_check_subscription($entity_guid, $user_guid, true);
+	
 	// make sure we can't autosubscribe
 	add_entity_relationship($user_guid, CONTENT_SUBSCRIPTIONS_BLOCK, $entity_guid);
 	
-	// check if we have a subscription
-	$sub = content_subscriptions_check_subscription($entity_guid, $user_guid, true);
+	// quick return if no subscriptions
 	if (empty($sub)) {
 		return true;
 	}
@@ -308,4 +310,46 @@ function content_subscriptions_get_notification_settings($user_guid = 0) {
 	}
 	
 	return array();
+}
+
+/**
+ * Check if a user has a block relationship with an entity
+ *
+ * @param int $entity_guid the entity to check
+ * @param int $user_guid   the user to check for (default: current user)
+ *
+ * @return bool
+ */
+function content_subscriptions_check_block_subscription($entity_guid, $user_guid = 0) {
+	static $user_cache;
+	
+	$entity_guid = sanitise_int($entity_guid, false);
+	$user_guid = sanitise_int($user_guid, false);
+	
+	if (empty($user_guid)) {
+		$user_guid = elgg_get_logged_in_user_guid();
+	}
+	
+	if (empty($entity_guid) || empty($user_guid)) {
+		return false;
+	}
+	
+	if (!isset($user_cache)) {
+		$user_cache = array();
+	}
+	
+	if (!isset($user_cache[$user_guid])) {
+		$user_cache[$user_guid] = array();
+		
+		$relationships = get_entity_relationships($user_guid);
+		if (!empty($relationships)) {
+			foreach ($relationships as $relationship) {
+				if ($relationship->relationship === CONTENT_SUBSCRIPTIONS_BLOCK) {
+					$user_cache[$user_guid][] = (int) $relationship->guid_two;
+				}
+			}
+		}
+	}
+	
+	return in_array($entity_guid, $user_cache[$user_guid]);
 }
