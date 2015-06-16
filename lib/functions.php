@@ -270,6 +270,7 @@ function content_subscriptions_get_supported_entity_types() {
  * @return array
  */
 function content_subscriptions_get_notification_settings($user_guid = 0) {
+	static $user_cache;
 	
 	$user_guid = sanitise_int($user_guid, false);
 	if (empty($user_guid)) {
@@ -280,36 +281,43 @@ function content_subscriptions_get_notification_settings($user_guid = 0) {
 		return array();
 	}
 	
-	if (elgg_is_active_plugin("notifications")) {
-		$saved = elgg_get_plugin_user_setting("notification_settings_saved", $user_guid, "content_subscriptions");
-		if (!empty($saved)) {
-			$settings = elgg_get_plugin_user_setting("notification_settings", $user_guid, "content_subscriptions");
+	if (!isset($user_cache)) {
+		$user_cache = array();
+	}
+	
+	if (!isset($user_cache[$user_guid])) {
+		$user_cache[$user_guid] = array();
+		$checked = false;
+		
+		if (elgg_is_active_plugin("notifications")) {
+			$checked = true;
+			$saved = elgg_get_plugin_user_setting("notification_settings_saved", $user_guid, "content_subscriptions");
+			if (!empty($saved)) {
+				$settings = elgg_get_plugin_user_setting("notification_settings", $user_guid, "content_subscriptions");
+				
+				if (!empty($settings)) {
+					$user_cache[$user_guid] = string_to_tag_array($settings);
+				}
+			}
+		}
+		
+		if (!$checked) {
+			// default elgg settings
+			$settings = get_user_notification_settings($user_guid);
 			
 			if (!empty($settings)) {
-				return string_to_tag_array($settings);
+				$settings = (array) $settings;
+				
+				foreach ($settings as $method => $value) {
+					if (!empty($value)) {
+						$user_cache[$user_guid][] = $method;
+					}
+				}
 			}
-			
-			return array();
 		}
 	}
 	
-	// default elgg settings
-	$settings = get_user_notification_settings($user_guid);
-	
-	if (!empty($settings)) {
-		$settings = (array) $settings;
-		$res = array();
-		
-		foreach ($settings as $method => $value) {
-			if (!empty($value)) {
-				$res[] = $method;
-			}
-		}
-		
-		return $res;
-	}
-	
-	return array();
+	return $user_cache[$user_guid];
 }
 
 /**
