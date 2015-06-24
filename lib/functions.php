@@ -290,9 +290,10 @@ function content_subscriptions_get_notification_settings($user_guid = 0) {
 		$checked = false;
 		
 		if (elgg_is_active_plugin("notifications")) {
-			$checked = true;
+			
 			$saved = elgg_get_plugin_user_setting("notification_settings_saved", $user_guid, "content_subscriptions");
 			if (!empty($saved)) {
+				$checked = true;
 				$settings = elgg_get_plugin_user_setting("notification_settings", $user_guid, "content_subscriptions");
 				
 				if (!empty($settings)) {
