@@ -1,10 +1,12 @@
 <?php
 /**
- * This file was created by Translation Editor v2.0
- * On 2014-10-14 16:19
+ * This file was created by Translation Editor v4.0
+ * On 2015-07-07 11:42
  */
 
 return array (
+  'content_subscriptions:settings:likes' => 'Automatisch volgen van content als je Liked?',
+  'content_subscriptions:settings:likes:description' => 'Als je content Liked ook direct volgens, hetzelfde als wanneer je een reactie achter laat. Dit is alleen van toepassing als de Likes plugin aanstaat.',
   'admin:upgrades:content_subscriptions' => 'Content volgen',
   'content_subscriptions:settings:description' => 'Ontvang notificaties als er wordt gereageerd op content die je volgt',
   'content_subscriptions:create:comment:subject' => 'Nieuwe reactie op: %s',

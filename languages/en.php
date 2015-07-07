@@ -10,6 +10,11 @@ return array(
 	'admin:upgrades:content_subscriptions' => "Content Subscriptions",
 	'content_subscriptions:settings:description' => "Receive notifications when comments get posted on content you subscribed to",
 	
+	// settings
+	'content_subscriptions:settings:likes' => "Auto subscribe to content on Like?",
+	'content_subscriptions:settings:likes:description' => "When you Like content also subscribe to updates, the same as when you leave a comment. This only applies when the Likes plugin is enabled.",
+	
+	// comment notifications
 	'content_subscriptions:create:comment:subject' => "New comment on: %s",
 	'content_subscriptions:create:comment:summary' => "New comment on: %s",
 	'content_subscriptions:create:comment:message' => "Hi %s,

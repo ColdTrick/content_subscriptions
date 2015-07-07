@@ -28,6 +28,7 @@ function content_subscriptions_init() {
 	
 	// register event handlers
 	elgg_register_event_handler("create", "object", "content_subscriptions_create_object_handler");
+	elgg_register_event_handler("create", "annotation", array('ColdTrick\ContentSubscriptions\Likes', 'create'));
 	elgg_register_event_handler("upgrade", "system", "content_subscriptions_upgrade_system_handler");
 	
 	elgg_register_notification_event("object", "comment");
