@@ -1,9 +1,14 @@
 Version History
 ===============
 
-3.0
+3.0 (2015-07-08):
 
 - changes for Elgg 1.10
+- added: block subscription cache for optimization
+- added: composer support
+- added: plugin setting to auto subscribe on Like
+- changed: optimized check user notification setting
+- fixed: incorrect fallback check
 
 2.0 (2014-11-17):
 
