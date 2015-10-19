@@ -37,6 +37,7 @@ function content_subscriptions_init() {
 	// register plugin hooks
 	elgg_register_plugin_hook_handler("register", "menu:entity", "content_subscriptions_register_entity_menu_hook");
 	elgg_register_plugin_hook_handler("get", "subscriptions", "content_subscriptions_get_subscriptions_verify_hook", 400);
+	elgg_register_plugin_hook_handler("get", "subscriptions", array('ColdTrick\ContentSubscriptions\Subscriptions', 'addDiscussionOwner'));
 	elgg_register_plugin_hook_handler("get", "subscriptions", "content_subscriptions_get_subscriptions_group_check_hook", 999);
 	elgg_register_plugin_hook_handler("action", "notificationsettings/save", "content_subscriptions_notifications_settings_save_hook");
 	
