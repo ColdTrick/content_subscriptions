@@ -1,5 +1,7 @@
 <?php
 
+elgg_require_js('content_subscriptions/personal_notifications');
+
 $user = elgg_extract('user', $vars);
 
 $NOTIFICATION_HANDLERS = _elgg_services()->notifications->getMethods();
@@ -43,11 +45,3 @@ $content .= elgg_format_element('td', [], '&nbsp;');
 $content .= elgg_format_element('tr', [], $content);
 
 echo elgg_format_element('table', ['id' => 'content-subscriptions-notification-settings', 'class' => 'hidden'], $content);
-
-?>
-<script type='text/javascript'>
-	var cs_content = $('#content-subscriptions-notification-settings tr:first').html();
-
-	$('#notificationstable tr:last').after('<tr>' + cs_content + '</tr>');
-	$('#content-subscriptions-notification-settings').remove();
-</script>
