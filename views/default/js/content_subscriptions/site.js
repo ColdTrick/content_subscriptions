@@ -17,7 +17,7 @@ elgg.content_subscriptions.init = function() {
 
 		return false;
 	});
-}
+};
 
 //register init hook
 elgg.register_hook_handler('init', 'system', elgg.content_subscriptions.init);
