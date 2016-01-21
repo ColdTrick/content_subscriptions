@@ -104,7 +104,7 @@ class Subscriptions {
 			'relationship_guid' => $object->getContainerGUID(),
 			'inverse_relationship' => true,
 		];
-		$batch = new ElggBatch('elgg_get_entities_from_relationship', $options);
+		$batch = new \ElggBatch('elgg_get_entities_from_relationship', $options);
 		foreach ($batch as $user) {
 			if (!isset($return_value[$user->getGUID()])) {
 				continue;
