@@ -34,7 +34,7 @@ function content_subscriptions_check_subscription($entity_guid, $user_guid = 0, 
 	$ia = elgg_set_ignore_access(true);
 	$entity = get_entity($entity_guid);
 	
-	if (elgg_instanceof($entity, 'object', 'groupforumtopic')) {
+	if (elgg_instanceof($entity, 'object', 'discussion')) {
 		$group_sub = content_subscriptions_check_notification_settings($entity->getContainerEntity(), $user_guid, $return_subscription);
 		
 		if ($group_sub) {
@@ -249,7 +249,7 @@ function content_subscriptions_can_subscribe(ElggEntity $entity, $user_guid = 0)
 function content_subscriptions_get_supported_entity_types() {
 	$result = [
 		'object' => [
-			'groupforumtopic',
+			'discussion',
 			'blog',
 			'file',
 			'page_top',

@@ -31,7 +31,7 @@ class Subscriptions {
 		}
 		
 		$discussion = $discussion_reply->getContainerEntity();
-		if (!elgg_instanceof($discussion, 'object', 'groupforumtopic')) {
+		if (!elgg_instanceof($discussion, 'object', 'discussion')) {
 			return;
 		}
 		
