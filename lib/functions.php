@@ -34,7 +34,7 @@ function content_subscriptions_check_subscription($entity_guid, $user_guid = 0, 
 	$ia = elgg_set_ignore_access(true);
 	$entity = get_entity($entity_guid);
 	
-	if (elgg_instanceof($entity, "object", "groupforumtopic")) {
+	if (elgg_instanceof($entity, 'object', 'groupforumtopic')) {
 		$group_sub = content_subscriptions_check_notification_settings($entity->getContainerEntity(), $user_guid, $return_subscription);
 		
 		if ($group_sub) {
@@ -183,7 +183,7 @@ function content_subscriptions_check_notification_settings(ElggEntity $container
 	}
 	
 	// only check groups
-	if (!empty($container) && elgg_instanceof($container, "group") && !empty($user_guid)) {
+	if (($container instanceof ElggGroup) && !empty($user_guid)) {
 		
 		if (!isset($user_cache[$container->getGUID()])) {
 			$user_cache[$container->getGUID()] = elgg_get_subscriptions_for_container($container->getGUID());
@@ -208,34 +208,37 @@ function content_subscriptions_check_notification_settings(ElggEntity $container
  * @return bool
  */
 function content_subscriptions_can_subscribe(ElggEntity $entity, $user_guid = 0) {
-	$result = false;
 	
 	$user_guid = sanitise_int($user_guid, false);
 	if (empty($user_guid)) {
 		$user_guid = elgg_get_logged_in_user_guid();
 	}
 	
-	if (!empty($user_guid) && !empty($entity) && elgg_instanceof($entity)) {
-		
-		if ($entity->getOwnerGUID() != $user_guid) {
-			$supported_entity_types = content_subscriptions_get_supported_entity_types();
-			
-			if (!empty($supported_entity_types)) {
-				$type = $entity->getType();
-				
-				if (isset($supported_entity_types[$type])) {
-					$subtype = $entity->getSubtype();
-					if (!empty($subtype)) {
-						$result = in_array($subtype, $supported_entity_types[$type]);
-					} else {
-						$result = true;
-					}
-				}
-			}
-		}
+	if (empty($user_guid) || !($entity instanceof ElggEntity)) {
+		return false;
 	}
 	
-	return $result;
+	if ($entity->getOwnerGUID() === $user_guid) {
+		// owner cant subscribe to own content
+		return false;
+	}
+	
+	$supported_entity_types = content_subscriptions_get_supported_entity_types();
+	if (empty($supported_entity_types)) {
+		return false;
+	}
+	
+	$type = $entity->getType();
+	if (!isset($supported_entity_types[$type])) {
+		return false;
+	}
+	
+	$subtype = $entity->getSubtype();
+	if (!empty($subtype)) {
+		return in_array($subtype, $supported_entity_types[$type]);
+	}
+	
+	return true;
 }
 
 /**
@@ -244,22 +247,22 @@ function content_subscriptions_can_subscribe(ElggEntity $entity, $user_guid = 0)
  * @return array
  */
 function content_subscriptions_get_supported_entity_types() {
-	$result = array(
-		"object" => array(
-			"groupforumtopic",
-			"blog",
-			"file",
-			"page_top",
-			"page",
-			"bookmark"
-		)
-	);
+	$result = [
+		'object' => [
+			'groupforumtopic',
+			'blog',
+			'file',
+			'page_top',
+			'page',
+			'bookmark'
+		],
+	];
 	
-	$params = array(
-		"defaults" => $result
-	);
+	$params = [
+		'defaults' => $result,
+	];
 	
-	return elgg_trigger_plugin_hook("entity_types", "content_subscriptions", $params, $result);
+	return elgg_trigger_plugin_hook('entity_types', 'content_subscriptions', $params, $result);
 }
 
 /**
@@ -278,23 +281,23 @@ function content_subscriptions_get_notification_settings($user_guid = 0) {
 	}
 	
 	if (empty($user_guid)) {
-		return array();
+		return [];
 	}
 	
 	if (!isset($user_cache)) {
-		$user_cache = array();
+		$user_cache = [];
 	}
 	
 	if (!isset($user_cache[$user_guid])) {
-		$user_cache[$user_guid] = array();
+		$user_cache[$user_guid] = [];
 		$checked = false;
 		
-		if (elgg_is_active_plugin("notifications")) {
+		if (elgg_is_active_plugin('notifications')) {
 			
-			$saved = elgg_get_plugin_user_setting("notification_settings_saved", $user_guid, "content_subscriptions");
+			$saved = elgg_get_plugin_user_setting('notification_settings_saved', $user_guid, 'content_subscriptions');
 			if (!empty($saved)) {
 				$checked = true;
-				$settings = elgg_get_plugin_user_setting("notification_settings", $user_guid, "content_subscriptions");
+				$settings = elgg_get_plugin_user_setting('notification_settings', $user_guid, 'content_subscriptions');
 				
 				if (!empty($settings)) {
 					$user_cache[$user_guid] = string_to_tag_array($settings);
@@ -344,11 +347,11 @@ function content_subscriptions_check_block_subscription($entity_guid, $user_guid
 	}
 	
 	if (!isset($user_cache)) {
-		$user_cache = array();
+		$user_cache = [];
 	}
 	
 	if (!isset($user_cache[$user_guid])) {
-		$user_cache[$user_guid] = array();
+		$user_cache[$user_guid] = [];
 		
 		$relationships = get_entity_relationships($user_guid);
 		if (!empty($relationships)) {
