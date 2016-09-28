@@ -8,7 +8,7 @@ $NOTIFICATION_HANDLERS = _elgg_services()->notifications->getMethods();
 
 $notification_settings = content_subscriptions_get_notification_settings($user->getGUID());
 
-$content .= elgg_format_element('td', ['class' => 'namefield'], elgg_view('output/longtext', [
+$content = elgg_format_element('td', ['class' => 'namefield'], elgg_view('output/longtext', [
 	'value' => elgg_echo('content_subscriptions:settings:description'),
 ]));
 
@@ -42,6 +42,6 @@ foreach ($NOTIFICATION_HANDLERS as $method) {
 }
 
 $content .= elgg_format_element('td', [], '&nbsp;');
-$content .= elgg_format_element('tr', [], $content);
+$content = elgg_format_element('tr', [], $content);
 
 echo elgg_format_element('table', ['id' => 'content-subscriptions-notification-settings', 'class' => 'hidden'], $content);
