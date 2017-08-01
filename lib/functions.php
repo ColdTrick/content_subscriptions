@@ -275,8 +275,8 @@ function content_subscriptions_get_supported_entity_types() {
 function content_subscriptions_get_notification_settings($user_guid = 0) {
 	static $user_cache;
 	
-	$user_guid = sanitise_int($user_guid, false);
-	if (empty($user_guid)) {
+	$user_guid = (int) $user_guid;
+	if ($user_guid < 1) {
 		$user_guid = elgg_get_logged_in_user_guid();
 	}
 	
@@ -288,42 +288,48 @@ function content_subscriptions_get_notification_settings($user_guid = 0) {
 		$user_cache = [];
 	}
 	
-	if (!isset($user_cache[$user_guid])) {
-		$user_cache[$user_guid] = [];
-		$checked = false;
+	if (isset($user_cache[$user_guid])) {
+		return $user_cache[$user_guid];
+	}
+	
+	$user_cache[$user_guid] = [];
+	$checked = false;
+	
+	if (elgg_is_active_plugin('notifications')) {
 		
-		if (elgg_is_active_plugin('notifications')) {
+		$saved = elgg_get_plugin_user_setting('notification_settings_saved', $user_guid, 'content_subscriptions');
+		if (!empty($saved)) {
+			$checked = true;
+			$settings = elgg_get_plugin_user_setting('notification_settings', $user_guid, 'content_subscriptions');
 			
-			$saved = elgg_get_plugin_user_setting('notification_settings_saved', $user_guid, 'content_subscriptions');
-			if (!empty($saved)) {
-				$checked = true;
-				$settings = elgg_get_plugin_user_setting('notification_settings', $user_guid, 'content_subscriptions');
-				
-				if (!empty($settings)) {
-					$user_cache[$user_guid] = string_to_tag_array($settings);
-				}
-			}
-		}
-		
-		if (!$checked) {
-			// default elgg settings
-			$user = get_user($user_guid);
-			if (empty($user)) {
-				return [];
-			}
-			
-			$settings = $user->getNotificationSettings();
 			if (!empty($settings)) {
-				$settings = (array) $settings;
-				foreach ($settings as $method => $enabled) {
-					if (empty($enabled)) {
-						continue;
-					}
-					
-					$user_cache[$user_guid][] = $method;
-				}
+				$user_cache[$user_guid] = string_to_tag_array($settings);
 			}
 		}
+	}
+	
+	if ($checked) {
+		return $user_cache[$user_guid];
+	}
+	
+	// default elgg settings
+	$user = get_user($user_guid);
+	if (empty($user)) {
+		return $user_cache[$user_guid];
+	}
+	
+	$settings = $user->getNotificationSettings();
+	if (empty($settings)) {
+		return $user_cache[$user_guid];
+	}
+	
+	$settings = (array) $settings;
+	foreach ($settings as $method => $enabled) {
+		if (empty($enabled)) {
+			continue;
+		}
+		
+		$user_cache[$user_guid][] = $method;
 	}
 	
 	return $user_cache[$user_guid];
@@ -340,14 +346,14 @@ function content_subscriptions_get_notification_settings($user_guid = 0) {
 function content_subscriptions_check_block_subscription($entity_guid, $user_guid = 0) {
 	static $user_cache;
 	
-	$entity_guid = sanitise_int($entity_guid, false);
-	$user_guid = sanitise_int($user_guid, false);
+	$entity_guid = (int) $entity_guid;
+	$user_guid = (int) $user_guid;
 	
-	if (empty($user_guid)) {
+	if ($user_guid < 1) {
 		$user_guid = elgg_get_logged_in_user_guid();
 	}
 	
-	if (empty($entity_guid) || empty($user_guid)) {
+	if (($entity_guid < 1) || ($user_guid < 1)) {
 		return false;
 	}
 	
@@ -355,17 +361,24 @@ function content_subscriptions_check_block_subscription($entity_guid, $user_guid
 		$user_cache = [];
 	}
 	
-	if (!isset($user_cache[$user_guid])) {
-		$user_cache[$user_guid] = [];
-		
-		$relationships = get_entity_relationships($user_guid);
-		if (!empty($relationships)) {
-			foreach ($relationships as $relationship) {
-				if ($relationship->relationship === CONTENT_SUBSCRIPTIONS_BLOCK) {
-					$user_cache[$user_guid][] = (int) $relationship->guid_two;
-				}
-			}
+	if (isset($user_cache[$user_guid])) {
+		return in_array($entity_guid, $user_cache[$user_guid]);
+	}
+	
+	$user_cache[$user_guid] = [];
+	
+	$relationships = get_entity_relationships($user_guid);
+	if (!empty($relationships)) {
+		return false;
+	}
+	
+	/* @var $relationship ElggRelationship */
+	foreach ($relationships as $relationship) {
+		if ($relationship->relationship !== CONTENT_SUBSCRIPTIONS_BLOCK) {
+			continue;
 		}
+		
+		$user_cache[$user_guid][] = (int) $relationship->guid_two;
 	}
 	
 	return in_array($entity_guid, $user_cache[$user_guid]);
