@@ -307,15 +307,20 @@ function content_subscriptions_get_notification_settings($user_guid = 0) {
 		
 		if (!$checked) {
 			// default elgg settings
-			$settings = get_user_notification_settings($user_guid);
+			$user = get_user($user_guid);
+			if (empty($user)) {
+				return [];
+			}
 			
+			$settings = $user->getNotificationSettings();
 			if (!empty($settings)) {
 				$settings = (array) $settings;
-				
-				foreach ($settings as $method => $value) {
-					if (!empty($value)) {
-						$user_cache[$user_guid][] = $method;
+				foreach ($settings as $method => $enabled) {
+					if (empty($enabled)) {
+						continue;
 					}
+					
+					$user_cache[$user_guid][] = $method;
 				}
 			}
 		}

@@ -40,7 +40,7 @@ class Subscriptions {
 			return;
 		}
 		
-		$user_notification_settings = get_user_notification_settings($owner->getGUID());
+		$user_notification_settings = $owner->getNotificationSettings();
 		if (empty($user_notification_settings)) {
 			// user has no settings, so no notification
 			return;
