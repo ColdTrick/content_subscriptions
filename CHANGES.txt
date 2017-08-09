@@ -1,6 +1,11 @@
 Version history
 ===============
 
+5.0 (2017-08-09):
+
+- changed: increased minimal Elgg version requirement to 2.3
+- fix: no longer use deprecated function
+
 4.0 (2016-01-21):
 
 - changed: discussion subtype to correct subtype for Elgg 2.0
