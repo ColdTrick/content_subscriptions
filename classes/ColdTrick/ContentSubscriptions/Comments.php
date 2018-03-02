@@ -38,16 +38,12 @@ class Comments {
 	 */
 	public static function prepareNotification($hook, $type, $return_value, $params) {
 		
-		if (!($return_value instanceof \Elgg\Notifications\Notification)) {
-			return;
-		}
-		
-		if (empty($params) || !is_array($params)) {
+		if (!$return_value instanceof \Elgg\Notifications\Notification) {
 			return;
 		}
 		
 		$event = elgg_extract('event', $params);
-		if (empty($event) || !($event instanceof \Elgg\Notifications\Event)) {
+		if (!$event instanceof \Elgg\Notifications\NotificationEvent) {
 			return;
 		}
 		
@@ -60,15 +56,15 @@ class Comments {
 		$language = elgg_extract('language', $params, get_current_language());
 		$recipient = elgg_extract('recipient', $params);
 		
-		$return_value->subject = elgg_echo('content_subscriptions:create:comment:subject', [$object->title], $language);
+		$return_value->subject = elgg_echo('content_subscriptions:create:comment:subject', [$object->getDisplayname()], $language);
 		$return_value->body = elgg_echo('content_subscriptions:create:comment:message', [
-			$recipient->name,
-			$actor->name,
-			$object->title,
+			$recipient->getDisplayname(),
+			$actor->getDisplayname(),
+			$object->getDisplayname(),
 			$comment->description,
 			$object->getURL(),
 		], $language);
-		$return_value->summary = elgg_echo('content_subscriptions:create:comment:summary', [$object->title], $language);
+		$return_value->summary = elgg_echo('content_subscriptions:create:comment:summary', [$object->getDisplayname()], $language);
 		
 		// restore access
 		elgg_set_ignore_access($ia);
