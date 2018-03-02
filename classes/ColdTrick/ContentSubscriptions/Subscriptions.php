@@ -8,7 +8,7 @@ class Subscriptions {
 	 * Add a discussion owner to the notified users
 	 *
 	 * @param string $hook         the name of the hook
-	 * @param stirng $type         the type of the hook
+	 * @param string $type         the type of the hook
 	 * @param array  $return_value the current return value
 	 * @param array  $params       supplied values
 	 *
@@ -70,7 +70,7 @@ class Subscriptions {
 	 * Make sure unsubscribed users don't get notifications based on their group-subscriptions
 	 *
 	 * @param string $hook         the name of the hook
-	 * @param stirng $type         the type of the hook
+	 * @param string $type         the type of the hook
 	 * @param array  $return_value the current return value
 	 * @param array  $params       supplied values
 	 *
@@ -120,7 +120,7 @@ class Subscriptions {
 	 * Verify that the subscribed users still have their preferences
 	 *
 	 * @param string $hook         the name of the hook
-	 * @param stirng $type         the type of the hook
+	 * @param string $type         the type of the hook
 	 * @param array  $return_value the current return value
 	 * @param array  $params       supplied values
 	 *

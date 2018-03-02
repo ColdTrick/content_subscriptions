@@ -7,9 +7,9 @@ class Comments {
 	/**
 	 * Make sure we can autosubscribe the user to further updates
 	 *
-	 * @param string     $event  the name of the event
-	 * @param string     $type   the type of the event
-	 * @param ElggObject $object the created comment
+	 * @param string      $event  the name of the event
+	 * @param string      $type   the type of the event
+	 * @param \ElggObject $object the created comment
 	 *
 	 * @return void
 	 */
@@ -30,7 +30,7 @@ class Comments {
 	 * Change the default notification message for comments
 	 *
 	 * @param string                           $hook         the name of the hook
-	 * @param stirng                           $type         the type of the hook
+	 * @param string                           $type         the type of the hook
 	 * @param \Elgg\Notifications\Notification $return_value the current return value
 	 * @param array                            $params       supplied values
 	 *
