@@ -4,6 +4,9 @@ namespace ColdTrick\ContentSubscriptions;
 
 class Likes {
 	
+	/**
+	 * @var bool Automaticly subscribe on like
+	 */
 	protected static $autosubscribe;
 	
 	/**
@@ -22,7 +25,7 @@ class Likes {
 			return;
 		}
 		
-		if (empty($annotation) || !($annotation instanceof \ElggAnnotation)) {
+		if (!$annotation instanceof \ElggAnnotation) {
 			// not an annotation
 			return;
 		}
@@ -33,12 +36,12 @@ class Likes {
 		}
 		
 		$entity = $annotation->getEntity();
-		if (empty($entity) || !($entity instanceof \ElggEntity)) {
+		if (!$entity instanceof \ElggEntity) {
 			return;
 		}
 		
 		$user = $annotation->getOwnerEntity();
-		if (empty($user) || !($user instanceof \ElggUser)) {
+		if (!$user instanceof \ElggUser) {
 			return;
 		}
 		
