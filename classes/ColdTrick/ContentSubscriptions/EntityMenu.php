@@ -20,10 +20,6 @@ class EntityMenu {
 			return;
 		}
 		
-		if (empty($params) || !is_array($params)) {
-			return;
-		}
-		
 		$entity = elgg_extract('entity', $params);
 		if (empty($entity) || !content_subscriptions_can_subscribe($entity)) {
 			return;

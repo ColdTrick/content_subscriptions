@@ -15,7 +15,7 @@ class Comments {
 	 */
 	public static function createObject($event, $type, \ElggObject $object) {
 		
-		if (!($object instanceof \ElggComment)) {
+		if (!$object instanceof \ElggComment) {
 			return;
 		}
 		

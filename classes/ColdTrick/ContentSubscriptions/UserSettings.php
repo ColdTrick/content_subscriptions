@@ -8,7 +8,7 @@ class UserSettings {
 	 * Save the content subscriptions preferences for the user
 	 *
 	 * @param string $hook         the name of the hook
-	 * @param stirng $type         the type of the hook
+	 * @param string $type         the type of the hook
 	 * @param array  $return_value the current return value
 	 * @param array  $params       supplied values
 	 *
@@ -16,7 +16,7 @@ class UserSettings {
 	 */
 	public static function notificationSettingsSaveAction($hook, $type, $return_value, $params) {
 		
-		$NOTIFICATION_HANDLERS = _elgg_services()->notifications->getMethods();
+		$NOTIFICATION_HANDLERS = elgg_get_notification_methods();
 		if (empty($NOTIFICATION_HANDLERS) || !is_array($NOTIFICATION_HANDLERS)) {
 			return;
 		}

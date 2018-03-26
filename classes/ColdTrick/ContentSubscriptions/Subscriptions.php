@@ -16,17 +16,13 @@ class Subscriptions {
 	 */
 	public static function addDiscussionOwner($hook, $type, $return_value, $params) {
 		
-		if (empty($params) || !is_array($params)) {
-			return;
-		}
-		
 		$event = elgg_extract('event', $params);
-		if (!($event instanceof \Elgg\Notifications\Event)) {
+		if (!$event instanceof \Elgg\Notifications\NotificationEvent) {
 			return;
 		}
 		
 		$discussion_reply = $event->getObject();
-		if (!($discussion_reply instanceof \ElggDiscussionReply)) {
+		if (!$discussion_reply instanceof \ElggDiscussionReply) {
 			return;
 		}
 		
@@ -36,7 +32,7 @@ class Subscriptions {
 		}
 		
 		$owner = $discussion->getOwnerEntity();
-		if (!($owner instanceof \ElggUser)) {
+		if (!$owner instanceof \ElggUser) {
 			return;
 		}
 		
@@ -78,22 +74,18 @@ class Subscriptions {
 	 */
 	public static function removeUnsubscribedGroupMembers($hook, $type, $return_value, $params) {
 		
-		if (empty($params) || !is_array($params)) {
-			return;
-		}
-		
 		if (empty($return_value)) {
 			// no subscribers to check
 			return;
 		}
 		
 		$event = elgg_extract('event', $params);
-		if (!($event instanceof \Elgg\Notifications\Event)) {
+		if (!$event instanceof \Elgg\Notifications\NotificationEvent) {
 			return;
 		}
 		
 		$object = $event->getObject();
-		if (!($object instanceof \ElggComment)) {
+		if (!$object instanceof \ElggComment) {
 			return;
 		}
 		
@@ -128,22 +120,18 @@ class Subscriptions {
 	 */
 	public static function verifySubscribersSettings($hook, $type, $return_value, $params) {
 		
-		if (empty($params) || !is_array($params)) {
-			return;
-		}
-		
 		if (empty($return_value)) {
 			// no subscribers to check
 			return;
 		}
 		
 		$event = elgg_extract("event", $params);
-		if (!($event instanceof \Elgg\Notifications\Event)) {
+		if (!$event instanceof \Elgg\Notifications\NotificationEvent) {
 			return;
 		}
 		
 		$object = $event->getObject();
-		if (!($object instanceof \ElggComment)) {
+		if (!$object instanceof \ElggComment) {
 			return;
 		}
 		

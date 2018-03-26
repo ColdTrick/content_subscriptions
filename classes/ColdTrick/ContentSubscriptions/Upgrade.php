@@ -21,12 +21,12 @@ class Upgrade {
 		access_show_hidden_entities(true);
 		
 		// register an upgrade script
-		$options = array(
+		$options = [
 			'type' => 'user',
 			'relationship' => CONTENT_SUBSCRIPTIONS_SUBSCRIPTION,
 			'inverse_relationship' => true,
 			'count' => true
-		);
+		];
 		$count = elgg_get_entities_from_relationship($options);
 		if ($count) {
 			$path = 'admin/upgrades/content_subscriptions';
