@@ -1,6 +1,11 @@
 Version history
 ===============
 
+5.1 (2018-04-05):
+
+- added: Spanish translation
+- changed: always adjust comment notification text
+
 5.0.1 (2017-09-06):
 
 - several small chores/fixes
