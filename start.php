@@ -38,9 +38,4 @@ function content_subscriptions_init() {
 	elgg_register_plugin_hook_handler('get', 'subscriptions', '\ColdTrick\ContentSubscriptions\Subscriptions::addDiscussionOwner');
 	elgg_register_plugin_hook_handler('get', 'subscriptions', '\ColdTrick\ContentSubscriptions\Subscriptions::removeUnsubscribedGroupMembers', 999);
 	elgg_register_plugin_hook_handler('action', 'notificationsettings/save', '\ColdTrick\ContentSubscriptions\UserSettings::notificationSettingsSaveAction');
-	
-	// register actions
-	elgg_register_action('content_subscriptions/subscribe', dirname(__FILE__) . '/actions/subscribe.php');
-	elgg_register_action('content_subscriptions/upgrade', dirname(__FILE__) . '/actions/upgrade.php', 'admin');
-	
 }
