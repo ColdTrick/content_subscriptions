@@ -3,7 +3,7 @@
 	"description": "Offers the ability to follow a discussion and get notified about new comments",
 	"type": "elgg-plugin",
 	"keywords": ["elgg", "plugin", "notification"],
-	"license": "GPL-2.0",
+	"license": "GPL-2.0-only",
 	"support": {
 		"source": "https://github.com/ColdTrick/content_subscriptions",
 		"issues": "https://github.com/ColdTrick/content_subscriptions/issues"
@@ -16,6 +16,6 @@
 		"coldtrick/releases": "dev-master"
 	},
 	"conflict": {
-		"elgg/elgg": "<2.3"
+		"elgg/elgg": "<3.0"
 	}
 }
