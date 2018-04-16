@@ -368,7 +368,7 @@ function content_subscriptions_check_block_subscription($entity_guid, $user_guid
 	$user_cache[$user_guid] = [];
 	
 	$relationships = get_entity_relationships($user_guid);
-	if (!empty($relationships)) {
+	if (empty($relationships)) {
 		return false;
 	}
 	
