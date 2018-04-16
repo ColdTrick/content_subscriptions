@@ -1,6 +1,10 @@
 Version history
 ===============
 
+5.1.1 (2018-04-16):
+
+- fixed: correctly verify block relationships
+
 5.1 (2018-04-05):
 
 - added: Spanish translation
