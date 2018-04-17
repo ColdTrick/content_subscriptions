@@ -1,24 +1,13 @@
 <?php
 /**
- * This file was created by Translation Editor v4.0
- * On 2015-07-07 11:42
+ * This file was created by Translation Editor v7.0-beta
+ * On 2018-04-17 15:46
  */
 
 return array (
-  'content_subscriptions:settings:likes' => 'Automatisch volgen van content als je Liked?',
+  'content_subscriptions:settings:likes' => 'Automatisch volgen van content als je Liked',
   'content_subscriptions:settings:likes:description' => 'Als je content Liked ook direct volgens, hetzelfde als wanneer je een reactie achter laat. Dit is alleen van toepassing als de Likes plugin aanstaat.',
-  'admin:upgrades:content_subscriptions' => 'Content volgen',
   'content_subscriptions:settings:description' => 'Ontvang notificaties als er wordt gereageerd op content die je volgt',
-  'content_subscriptions:create:comment:subject' => 'Nieuwe reactie op: %s',
-  'content_subscriptions:create:comment:summary' => 'Nieuwe reactie op: %s',
-  'content_subscriptions:create:comment:message' => 'Hallo %s,
-
-%s reageerde op %s:
-
-%s
-
-Bekijk en reageer op de content:
-%s',
   'content_subscriptions:subscribe' => 'Volgen',
   'content_subscriptions:unsubscribe' => 'Ontvolgen',
   'content_subscriptions:action:subscribe:error:owner' => 'Je bent de eigenaar van deze content en kan niet (ont)volgen',
