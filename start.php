@@ -31,7 +31,6 @@ function content_subscriptions_init() {
 	// register plugin hooks
 	elgg_register_plugin_hook_handler('register', 'menu:entity', '\ColdTrick\ContentSubscriptions\EntityMenu::register');
 	elgg_register_plugin_hook_handler('get', 'subscriptions', '\ColdTrick\ContentSubscriptions\Subscriptions::verifySubscribersSettings', 400);
-	elgg_register_plugin_hook_handler('get', 'subscriptions', '\ColdTrick\ContentSubscriptions\Subscriptions::addDiscussionOwner');
 	elgg_register_plugin_hook_handler('get', 'subscriptions', '\ColdTrick\ContentSubscriptions\Subscriptions::removeUnsubscribedGroupMembers', 999);
 	elgg_register_plugin_hook_handler('action', 'notificationsettings/save', '\ColdTrick\ContentSubscriptions\UserSettings::notificationSettingsSaveAction');
 }

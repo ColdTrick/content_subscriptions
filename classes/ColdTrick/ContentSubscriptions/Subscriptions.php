@@ -5,64 +5,6 @@ namespace ColdTrick\ContentSubscriptions;
 class Subscriptions {
 	
 	/**
-	 * Add a discussion owner to the notified users
-	 *
-	 * @param string $hook         the name of the hook
-	 * @param string $type         the type of the hook
-	 * @param array  $return_value the current return value
-	 * @param array  $params       supplied values
-	 *
-	 * @return void|array
-	 */
-	public static function addDiscussionOwner($hook, $type, $return_value, $params) {
-		
-		$event = elgg_extract('event', $params);
-		if (!$event instanceof \Elgg\Notifications\NotificationEvent) {
-			return;
-		}
-		
-		$discussion_reply = $event->getObject();
-		if (!$discussion_reply instanceof \ElggDiscussionReply) {
-			return;
-		}
-		
-		$discussion = $discussion_reply->getContainerEntity();
-		if (!elgg_instanceof($discussion, 'object', 'discussion')) {
-			return;
-		}
-		
-		$owner = $discussion->getOwnerEntity();
-		if (!$owner instanceof \ElggUser) {
-			return;
-		}
-		
-		$user_notification_settings = $owner->getNotificationSettings();
-		if (empty($user_notification_settings)) {
-			// user has no settings, so no notification
-			return;
-		}
-		
-		$temp = [];
-		foreach ($user_notification_settings as $method => $enabled) {
-			if (empty($enabled)) {
-				// notification method not enabled
-				continue;
-			}
-			
-			$temp[] = $method;
-		}
-		
-		if (empty($temp)) {
-			// no enabled notification methods
-			return;
-		}
-		
-		$return_value[$owner->getGUID()] = $temp;
-		
-		return $return_value;
-	}
-	
-	/**
 	 * Make sure unsubscribed users don't get notifications based on their group-subscriptions
 	 *
 	 * @param string $hook         the name of the hook
