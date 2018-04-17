@@ -7,7 +7,6 @@ return [
 	'content_subscriptions:subscribe' => "Subscribe",
 	'content_subscriptions:unsubscribe' => "Unsubscribe",
 	
-	'admin:upgrades:content_subscriptions' => "Content Subscriptions",
 	'content_subscriptions:settings:description' => "Receive notifications when comments get posted on content you subscribed to",
 	
 	// settings
