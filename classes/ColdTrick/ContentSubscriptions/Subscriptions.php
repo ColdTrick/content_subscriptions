@@ -7,21 +7,19 @@ class Subscriptions {
 	/**
 	 * Make sure unsubscribed users don't get notifications based on their group-subscriptions
 	 *
-	 * @param string $hook         the name of the hook
-	 * @param string $type         the type of the hook
-	 * @param array  $return_value the current return value
-	 * @param array  $params       supplied values
+	 * @param \Elgg\Hook $hook 'get', 'subscriptions'
 	 *
 	 * @return void|array
 	 */
-	public static function removeUnsubscribedGroupMembers($hook, $type, $return_value, $params) {
+	public static function removeUnsubscribedGroupMembers(\Elgg\Hook $hook) {
 		
-		if (empty($return_value)) {
+		$subscribers = $hook->getValue();
+		if (empty($subscribers)) {
 			// no subscribers to check
 			return;
 		}
 		
-		$event = elgg_extract('event', $params);
+		$event = $hook->getParam('event');
 		if (!$event instanceof \Elgg\Notifications\NotificationEvent) {
 			return;
 		}
@@ -31,43 +29,43 @@ class Subscriptions {
 			return;
 		}
 		
-		$options = [
+		/* @var $batch \ElggBatch */
+		$batch = elgg_get_entities([
 			'type' => 'user',
 			'limit' => false,
 			'relationship' => CONTENT_SUBSCRIPTIONS_BLOCK,
-			'relationship_guid' => $object->getContainerGUID(),
+			'relationship_guid' => $object->container_guid,
 			'inverse_relationship' => true,
-		];
-		$batch = new \ElggBatch('elgg_get_entities_from_relationship', $options);
+			'batch' => true,
+		]);
+		/* @var $user \ElggUser */
 		foreach ($batch as $user) {
-			if (!isset($return_value[$user->getGUID()])) {
+			if (!isset($subscribers[$user->guid])) {
 				continue;
 			}
 			
-			unset($return_value[$user->getGUID()]);
+			unset($subscribers[$user->guid]);
 		}
 		
-		return $return_value;
+		return $subscribers;
 	}
 	
 	/**
 	 * Verify that the subscribed users still have their preferences
 	 *
-	 * @param string $hook         the name of the hook
-	 * @param string $type         the type of the hook
-	 * @param array  $return_value the current return value
-	 * @param array  $params       supplied values
+	 * @param \Elgg\Hook $hook 'get', 'subscriptions'
 	 *
 	 * @return void|array
 	 */
-	public static function verifySubscribersSettings($hook, $type, $return_value, $params) {
+	public static function verifySubscribersSettings(\Elgg\Hook $hook) {
 		
-		if (empty($return_value)) {
+		$subscribers = $hook->getValue();
+		if (empty($subscribers)) {
 			// no subscribers to check
 			return;
 		}
 		
-		$event = elgg_extract("event", $params);
+		$event = $hook->getParam('event');
 		if (!$event instanceof \Elgg\Notifications\NotificationEvent) {
 			return;
 		}
@@ -77,15 +75,16 @@ class Subscriptions {
 			return;
 		}
 		
-		foreach ($return_value as $user_guid => $preferences) {
+		foreach ($subscribers as $user_guid => $preferences) {
 			$settings = content_subscriptions_get_notification_settings($user_guid);
-			if (!empty($settings)) {
-				$return_value[$user_guid] = $settings;
-			} else {
-				unset($return_value[$user_guid]);
+			if (empty($settings)) {
+				unset($subscribers[$user_guid]);
+				continue;
 			}
+			
+			$subscribers[$user_guid] = $settings;
 		}
 		
-		return $return_value;
+		return $subscribers;
 	}
 }
