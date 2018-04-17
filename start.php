@@ -28,9 +28,6 @@ function content_subscriptions_init() {
 	elgg_register_event_handler('create', 'object', '\ColdTrick\ContentSubscriptions\Comments::createObject');
 	elgg_register_event_handler('create', 'annotation', '\ColdTrick\ContentSubscriptions\Likes::create');
 	
-	elgg_register_notification_event('object', 'comment');
-	elgg_register_plugin_hook_handler('prepare', 'notification:create:object:comment', '\ColdTrick\ContentSubscriptions\Comments::prepareNotification');
-	
 	// register plugin hooks
 	elgg_register_plugin_hook_handler('register', 'menu:entity', '\ColdTrick\ContentSubscriptions\EntityMenu::register');
 	elgg_register_plugin_hook_handler('get', 'subscriptions', '\ColdTrick\ContentSubscriptions\Subscriptions::verifySubscribersSettings', 400);
