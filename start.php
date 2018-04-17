@@ -3,7 +3,6 @@
  * The main file for this plugin
  */
 
-define('CONTENT_SUBSCRIPTIONS_SUBSCRIPTION', 'content_subscription');
 define('CONTENT_SUBSCRIPTIONS_BLOCK', 'content_block_subscription');
 
 require_once(dirname(__FILE__) . '/lib/functions.php');
@@ -17,9 +16,6 @@ elgg_register_event_handler('init', 'system', 'content_subscriptions_init');
  * @return void
  */
 function content_subscriptions_init() {
-	
-	// JS
-	elgg_extend_view('js/elgg', 'js/content_subscriptions/site.js');
 	
 	// settings
 	elgg_extend_view('notifications/settings/other', 'content_subscriptions/notifications/settings');
