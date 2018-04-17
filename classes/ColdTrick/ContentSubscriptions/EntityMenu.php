@@ -7,48 +7,49 @@ class EntityMenu {
 	/**
 	 * Add a subscribe/unsubscribe link to the supported entity types
 	 *
-	 * @param string          $hook         the name of the hook
-	 * @param string          $type         the type of the hook
-	 * @param \ElggMenuItem[] $return_value the current menu items
-	 * @param array           $params       supplied params
+	 * @param \Elgg\Hook $hook 'register', 'menu:entity'
 	 *
 	 * @return void|\ElggMenuItem[]
 	 */
-	public static function register($hook, $type, $return_value, $params) {
+	public static function register(\Elgg\Hook $hook) {
 		
 		if (!elgg_is_logged_in()) {
 			return;
 		}
 		
-		$entity = elgg_extract('entity', $params);
-		if (empty($entity) || !content_subscriptions_can_subscribe($entity)) {
+		$entity = $hook->getEntityParam();
+		if (!$entity instanceof \ElggEntity || !content_subscriptions_can_subscribe($entity)) {
 			return;
 		}
 		
-		$subscribed = false;
-		if (content_subscriptions_check_subscription($entity->getGUID())) {
-			$subscribed = true;
-		}
+		$return_value = $hook->getValue();
+		$subscribed = content_subscriptions_check_subscription($entity->guid);
 		
 		$methods = content_subscriptions_get_notification_settings();
 		if (!empty($methods)) {
 			$return_value[] = \ElggMenuItem::factory([
 				'name' => 'content_subscription_subscribe',
 				'text' => elgg_echo('content_subscriptions:subscribe'),
-				'href' => "action/content_subscriptions/subscribe?entity_guid={$entity->getGUID()}",
-				'is_action' => true,
+				'href' => elgg_generate_action_url('content_subscriptions/subscribe', [
+					'entity_guid' => $entity->guid,
+				]),
+				'icon' => 'bell-o',
 				'priority' => 100,
 				'item_class' => $subscribed ? 'hidden' : '',
+				'data-toggle' => 'content-subscription-unsubscribe',
 			]);
 		}
 		
 		$return_value[] = \ElggMenuItem::factory([
 			'name' => 'content_subscription_unsubscribe',
 			'text' => elgg_echo('content_subscriptions:unsubscribe'),
-			'href' => "action/content_subscriptions/subscribe?entity_guid={$entity->getGUID()}",
-			'is_action' => true,
+			'href' => elgg_generate_action_url('content_subscriptions/subscribe', [
+				'entity_guid' => $entity->guid,
+			]),
+			'icon' => 'bell-slash-o',
 			'priority' => 101,
 			'item_class' => $subscribed ? '' : 'hidden',
+			'data-toggle' => 'content-subscription-subscribe',
 		]);
 		
 		return $return_value;

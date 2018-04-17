@@ -3,8 +3,6 @@ elgg.provide('elgg.content_subscriptions');
 
 elgg.content_subscriptions.init = function() {
 
-	elgg.ui.registerTogglableMenuItems('content-subscription-subscribe', 'content-subscription-unsubscribe');
-	
 	$('form.elgg-form-content-subscriptions-subscribe').on('submit', function() {
 		var $form = $(this);
 		
