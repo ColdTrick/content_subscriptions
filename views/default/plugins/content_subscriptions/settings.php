@@ -1,21 +1,16 @@
 <?php
 
+/* @var $plugin ElggPlugin */
 $plugin = elgg_extract('entity', $vars);
 
-$noyes_options = [
-	'no' => elgg_echo('option:no'),
-	'yes' => elgg_echo('option:yes'),
-];
-
 // like autosubscibe?
-echo '<div>';
-echo '<label>' . elgg_echo('content_subscriptions:settings:likes');
-echo elgg_view('input/select', [
+echo elgg_view_field([
+	'#type' => 'checkbox',
+	'#label' => elgg_echo('content_subscriptions:settings:likes'),
+	'#help' => elgg_echo('content_subscriptions:settings:likes:description'),
 	'name' => 'params[likes_autosubscribe]',
-	'value' => $plugin->likes_autosubscribe,
-	'options_values' => $noyes_options,
-	'class' => 'mls',
+	'default' => 'no',
+	'value' => 'yes',
+	'checked' => $plugin->likes_autosubscribe === 'yes',
+	'switch' => true,
 ]);
-echo '</label><br />';
-echo elgg_format_element('div', ['class' => 'elgg-subtext'], elgg_echo('content_subscriptions:settings:likes:description'));
-echo '</div>';

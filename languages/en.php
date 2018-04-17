@@ -11,7 +11,7 @@ return [
 	'content_subscriptions:settings:description' => "Receive notifications when comments get posted on content you subscribed to",
 	
 	// settings
-	'content_subscriptions:settings:likes' => "Auto subscribe to content on Like?",
+	'content_subscriptions:settings:likes' => "Auto subscribe to content on Like",
 	'content_subscriptions:settings:likes:description' => "When you Like content also subscribe to updates, the same as when you leave a comment. This only applies when the Likes plugin is enabled.",
 	
 	// actions

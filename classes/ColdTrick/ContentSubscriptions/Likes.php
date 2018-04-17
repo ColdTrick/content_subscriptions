@@ -12,19 +12,18 @@ class Likes {
 	/**
 	 * Listen to the creation of an annotation, if Like check auto subscribe
 	 *
-	 * @param string          $event  the name of the event
-	 * @param string          $type   the type of the event
-	 * @param \ElggAnnotation $annotation the created annotation
+	 * @param \Elgg\Event $event 'create', 'annotation'
 	 *
 	 * @return void
 	 */
-	public static function create($event, $type, $annotation) {
+	public static function create(\Elgg\Event $event) {
 		
 		if (!self::autoSubscribe()) {
 			// auto subscribe isn't enabled
 			return;
 		}
 		
+		$annotation = $event->getObject();
 		if (!$annotation instanceof \ElggAnnotation) {
 			// not an annotation
 			return;
@@ -45,13 +44,13 @@ class Likes {
 			return;
 		}
 		
-		if (!content_subscriptions_can_subscribe($entity, $user->getGUID())) {
+		if (!content_subscriptions_can_subscribe($entity, $user->guid)) {
 			// subscribing isn't allowed for this entity type/subtype
 			return;
 		}
 		
 		// auto subscribe to this entity
-		content_subscriptions_autosubscribe($entity->getGUID(), $user->getGUID());
+		content_subscriptions_autosubscribe($entity->guid, $user->guid);
 	}
 	
 	/**
