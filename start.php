@@ -22,7 +22,7 @@ function content_subscriptions_init() {
 	elgg_extend_view('js/elgg', 'js/content_subscriptions/site.js');
 	
 	// settings
-	elgg_extend_view('notifications/subscriptions/personal', 'content_subscriptions/notifications/settings');
+	elgg_extend_view('notifications/settings/other', 'content_subscriptions/notifications/settings');
 	
 	// register event handlers
 	elgg_register_event_handler('create', 'object', '\ColdTrick\ContentSubscriptions\Comments::createObject');
@@ -32,5 +32,5 @@ function content_subscriptions_init() {
 	elgg_register_plugin_hook_handler('register', 'menu:entity', '\ColdTrick\ContentSubscriptions\EntityMenu::register');
 	elgg_register_plugin_hook_handler('get', 'subscriptions', '\ColdTrick\ContentSubscriptions\Subscriptions::verifySubscribersSettings', 400);
 	elgg_register_plugin_hook_handler('get', 'subscriptions', '\ColdTrick\ContentSubscriptions\Subscriptions::removeUnsubscribedGroupMembers', 999);
-	elgg_register_plugin_hook_handler('action', 'notificationsettings/save', '\ColdTrick\ContentSubscriptions\UserSettings::notificationSettingsSaveAction');
+	elgg_register_plugin_hook_handler('response', 'action:notifications/settings', '\ColdTrick\ContentSubscriptions\UserSettings::notificationSettingsSaveAction');
 }

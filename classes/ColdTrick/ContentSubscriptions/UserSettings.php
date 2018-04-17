@@ -2,22 +2,27 @@
 
 namespace ColdTrick\ContentSubscriptions;
 
+use Elgg\Http\OkResponse;
+
 class UserSettings {
 	
 	/**
 	 * Save the content subscriptions preferences for the user
 	 *
-	 * @param string $hook         the name of the hook
-	 * @param string $type         the type of the hook
-	 * @param array  $return_value the current return value
-	 * @param array  $params       supplied values
+	 * @param \Elgg\Hook $hook 'response', 'action:notifications/settings'
 	 *
 	 * @return void
 	 */
-	public static function notificationSettingsSaveAction($hook, $type, $return_value, $params) {
+	public static function notificationSettingsSaveAction(\Elgg\Hook $hook) {
 		
-		$NOTIFICATION_HANDLERS = elgg_get_notification_methods();
-		if (empty($NOTIFICATION_HANDLERS) || !is_array($NOTIFICATION_HANDLERS)) {
+		$response = $hook->getValue();
+		if (!$response instanceof OkResponse) {
+			// something went wrong in the action, bailout
+			return;
+		}
+		
+		$methods = elgg_get_notification_methods();
+		if (empty($methods) || !is_array($methods)) {
 			return;
 		}
 		
@@ -31,23 +36,16 @@ class UserSettings {
 			return;
 		}
 		
-		$methods = [];
+		$selected_methods = (array) get_input('content_subscriptions', []);
+		$valid_methods = array_intersect($selected_methods, $methods);
 		
-		foreach ($NOTIFICATION_HANDLERS as $method) {
-			$setting = get_input("content_subscriptions_{$method}");
-			
-			if (!empty($setting)) {
-				$methods[] = $method;
-			}
-		}
-		
-		if (!empty($methods)) {
-			elgg_set_plugin_user_setting('notification_settings', implode(',', $methods), $user->getGUID(), 'content_subscriptions');
+		if (!empty($valid_methods)) {
+			elgg_set_plugin_user_setting('notification_settings', implode(',', $methods), $user->guid, 'content_subscriptions');
 		} else {
-			elgg_unset_plugin_user_setting('notification_settings', $user->getGUID(), 'content_subscriptions');
+			elgg_unset_plugin_user_setting('notification_settings', $user->guid, 'content_subscriptions');
 		}
 		
 		// set flag for correct fallback behaviour
-		elgg_set_plugin_user_setting('notification_settings_saved', '1', $user->getGUID(), 'content_subscriptions');
+		elgg_set_plugin_user_setting('notification_settings_saved', '1', $user->guid, 'content_subscriptions');
 	}
 }
