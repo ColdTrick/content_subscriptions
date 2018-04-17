@@ -1,6 +1,6 @@
 <?php
 /**
- * All helper functions form this plugin are bundled here
+ * All helper functions for this plugin are bundled here
  */
 
 /**
@@ -10,18 +10,19 @@
  * @param int  $user_guid           the user to check (defaults to current user)
  * @param bool $return_subscription return the subscription settings
  *
- * @return bool|array
+ * @return false|array
  */
 function content_subscriptions_check_subscription($entity_guid, $user_guid = 0, $return_subscription = false) {
 	
-	$entity_guid = sanitise_int($entity_guid, false);
-	$user_guid = sanitise_int($user_guid, false);
+	$entity_guid = (int) $entity_guid;
+	$user_guid = (int) $user_guid;
+	$return_subscription = (bool) $return_subscription;
 	
-	if (empty($user_guid)) {
+	if ($user_guid < 1) {
 		$user_guid = elgg_get_logged_in_user_guid();
 	}
 	
-	if (empty($entity_guid) || empty($user_guid)) {
+	if ($entity_guid < 1 || $user_guid < 1) {
 		return false;
 	}
 	
@@ -31,18 +32,17 @@ function content_subscriptions_check_subscription($entity_guid, $user_guid = 0, 
 	}
 	
 	// special case for discussions
-	$ia = elgg_set_ignore_access(true);
-	$entity = get_entity($entity_guid);
-	
-	if (elgg_instanceof($entity, 'object', 'discussion')) {
-		$group_sub = content_subscriptions_check_notification_settings($entity->getContainerEntity(), $user_guid, $return_subscription);
-		
-		if ($group_sub) {
-			elgg_set_ignore_access($ia);
-			return $group_sub;
+	$group_sub = elgg_call(ELGG_IGNORE_ACCESS, function() use($entity_guid, $user_guid, $return_subscription) {
+		$entity = get_entity($entity_guid);
+		if (!$entity instanceof ElggDiscussion) {
+			return false;
 		}
+		
+		return content_subscriptions_check_notification_settings($entity->getContainerEntity(), $user_guid, $return_subscription);
+	});
+	if ($group_sub !== false) {
+		return $group_sub;
 	}
-	elgg_set_ignore_access($ia);
 	
 	// check entity subscription
 	$subs = elgg_get_subscriptions_for_container($entity_guid);
@@ -54,11 +54,7 @@ function content_subscriptions_check_subscription($entity_guid, $user_guid = 0, 
 		return false;
 	}
 	
-	if ($return_subscription) {
-		return $subs[$user_guid];
-	}
-	
-	return true;
+	return $return_subscription ? $subs[$user_guid] : true;
 }
 
 /**
@@ -70,23 +66,28 @@ function content_subscriptions_check_subscription($entity_guid, $user_guid = 0, 
  * @return bool
  */
 function content_subscriptions_subscribe($entity_guid, $user_guid = 0) {
-	$entity_guid = sanitise_int($entity_guid, false);
-	$user_guid = sanitise_int($user_guid, false);
 	
-	if (empty($user_guid)) {
+	$entity_guid = (int) $entity_guid;
+	$user_guid = (int) $user_guid;
+	
+	if ($user_guid < 1) {
 		$user_guid = elgg_get_logged_in_user_guid();
+	}
+	
+	if ($entity_guid < 1 || $user_guid < 1) {
+		return false;
 	}
 	
 	// remove autosubscription block
 	remove_entity_relationship($user_guid, CONTENT_SUBSCRIPTIONS_BLOCK, $entity_guid);
 	
-	$notification_services = _elgg_services()->notifications->getMethods();
-	if (empty($notification_services)) {
+	$methods = elgg_get_notification_methods();
+	if (empty($methods)) {
 		return false;
 	}
 	
-	foreach ($notification_services as $service) {
-		elgg_add_subscription($user_guid, $service, $entity_guid);
+	foreach ($methods as $method) {
+		elgg_add_subscription($user_guid, $method, $entity_guid);
 	}
 	
 	return true;
@@ -101,27 +102,35 @@ function content_subscriptions_subscribe($entity_guid, $user_guid = 0) {
  * @return bool
  */
 function content_subscriptions_autosubscribe($entity_guid, $user_guid = 0) {
-	$result = false;
 	
-	$entity_guid = sanitise_int($entity_guid, false);
-	$user_guid = sanitise_int($user_guid, false);
+	$entity_guid = (int) $entity_guid;
+	$user_guid = (int) $user_guid;
 	
-	if (empty($user_guid)) {
+	if ($user_guid < 1) {
 		$user_guid = elgg_get_logged_in_user_guid();
 	}
 	
-	// check if the user blocked the subscription
-	if (!content_subscriptions_check_block_subscription($entity_guid, $user_guid)) {
-		$entity = get_entity($entity_guid);
-		
-		// check if this is not the content owner
-		if ($entity->getOwnerGUID() != $user_guid) {
-			// no, so subscribe
-			$result = content_subscriptions_subscribe($entity_guid, $user_guid);
-		}
+	if ($entity_guid < 1 || $user_guid < 1) {
+		return false;
 	}
 	
-	return $result;
+	// check if the user blocked the subscription
+	if (content_subscriptions_check_block_subscription($entity_guid, $user_guid)) {
+		return false;
+	}
+	
+	$entity = get_entity($entity_guid);
+	if (!$entity instanceof ElggEntity) {
+		return false;
+	}
+	
+	// check if this is not the content owner
+	if ($entity->owner_guid === $user_guid) {
+		return false;
+	}
+	
+	// no, so subscribe
+	return content_subscriptions_subscribe($entity_guid, $user_guid);
 }
 
 /**
@@ -134,14 +143,14 @@ function content_subscriptions_autosubscribe($entity_guid, $user_guid = 0) {
  */
 function content_subscriptions_unsubscribe($entity_guid, $user_guid = 0) {
 	
-	$entity_guid = sanitise_int($entity_guid, false);
-	$user_guid = sanitise_int($user_guid, false);
+	$entity_guid = (int) $entity_guid;
+	$user_guid = (int) $user_guid;
 	
-	if (empty($user_guid)) {
+	if ($user_guid < 1) {
 		$user_guid = elgg_get_logged_in_user_guid();
 	}
 	
-	if (empty($entity_guid) || empty($user_guid)) {
+	if ($entity_guid < 1 || $user_guid < 1) {
 		return false;
 	}
 	
@@ -157,8 +166,8 @@ function content_subscriptions_unsubscribe($entity_guid, $user_guid = 0) {
 	}
 	
 	// remove subscriptions
-	foreach ($sub as $service) {
-		elgg_remove_subscription($user_guid, $service, $entity_guid);
+	foreach ($sub as $method) {
+		elgg_remove_subscription($user_guid, $method, $entity_guid);
 	}
 	
 	return true;
@@ -171,32 +180,34 @@ function content_subscriptions_unsubscribe($entity_guid, $user_guid = 0) {
  * @param int        $user_guid           the user to check (defaults to current user)
  * @param bool       $return_subscription return the subscription settings
  *
- * @return bool
+ * @return bool|array
  */
 function content_subscriptions_check_notification_settings(ElggEntity $container, $user_guid = 0, $return_subscription = false) {
 	static $user_cache;
 	
-	$user_guid = sanitise_int($user_guid, false);
-	
-	if (empty($user_guid)) {
+	$user_guid = (int) $user_guid;
+	if ($user_guid < 1) {
 		$user_guid = elgg_get_logged_in_user_guid();
 	}
 	
-	// only check groups
-	if (($container instanceof ElggGroup) && !empty($user_guid)) {
-		
-		if (!isset($user_cache[$container->getGUID()])) {
-			$user_cache[$container->getGUID()] = elgg_get_subscriptions_for_container($container->getGUID());
-		}
-		
-		if ($return_subscription) {
-			return $user_cache[$container->getGUID()][$user_guid];
-		} else {
-			return isset($user_cache[$container->getGUID()][$user_guid]);
-		}
+	if ($user_guid < 1) {
+		return false;
 	}
 	
-	return false;
+	// only check groups
+	if (!$container instanceof ElggGroup) {
+		return false;
+	}
+	
+	if (!isset($user_cache[$container->guid])) {
+		$user_cache[$container->guid] = elgg_get_subscriptions_for_container($container->guid);
+	}
+	
+	if ($return_subscription) {
+		return elgg_extract($user_guid, $user_cache[$container->guid], false);
+	}
+	
+	return isset($user_cache[$container->guid][$user_guid]);
 }
 
 /**
@@ -209,17 +220,17 @@ function content_subscriptions_check_notification_settings(ElggEntity $container
  */
 function content_subscriptions_can_subscribe(ElggEntity $entity, $user_guid = 0) {
 	
-	$user_guid = sanitise_int($user_guid, false);
-	if (empty($user_guid)) {
+	$user_guid = (int) $user_guid;
+	if ($user_guid < 1) {
 		$user_guid = elgg_get_logged_in_user_guid();
 	}
 	
-	if (empty($user_guid) || !($entity instanceof ElggEntity)) {
+	if ($user_guid < 1 || !$entity instanceof ElggEntity) {
 		return false;
 	}
 	
-	if ($entity->getOwnerGUID() === $user_guid) {
-		// owner cant subscribe to own content
+	if ($entity->owner_guid === $user_guid) {
+		// owner can't subscribe to own content
 		return false;
 	}
 	
@@ -249,12 +260,11 @@ function content_subscriptions_can_subscribe(ElggEntity $entity, $user_guid = 0)
 function content_subscriptions_get_supported_entity_types() {
 	$result = [
 		'object' => [
-			'discussion',
 			'blog',
+			'bookmark',
+			'discussion',
 			'file',
-			'page_top',
 			'page',
-			'bookmark'
 		],
 	];
 	
@@ -273,19 +283,15 @@ function content_subscriptions_get_supported_entity_types() {
  * @return array
  */
 function content_subscriptions_get_notification_settings($user_guid = 0) {
-	static $user_cache;
+	static $user_cache = [];
 	
 	$user_guid = (int) $user_guid;
 	if ($user_guid < 1) {
 		$user_guid = elgg_get_logged_in_user_guid();
 	}
 	
-	if (empty($user_guid)) {
+	if ($user_guid < 1) {
 		return [];
-	}
-	
-	if (!isset($user_cache)) {
-		$user_cache = [];
 	}
 	
 	if (isset($user_cache[$user_guid])) {
@@ -344,7 +350,7 @@ function content_subscriptions_get_notification_settings($user_guid = 0) {
  * @return bool
  */
 function content_subscriptions_check_block_subscription($entity_guid, $user_guid = 0) {
-	static $user_cache;
+	static $user_cache = [];
 	
 	$entity_guid = (int) $entity_guid;
 	$user_guid = (int) $user_guid;
@@ -355,10 +361,6 @@ function content_subscriptions_check_block_subscription($entity_guid, $user_guid
 	
 	if (($entity_guid < 1) || ($user_guid < 1)) {
 		return false;
-	}
-	
-	if (!isset($user_cache)) {
-		$user_cache = [];
 	}
 	
 	if (isset($user_cache[$user_guid])) {
