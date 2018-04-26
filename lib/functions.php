@@ -3,6 +3,8 @@
  * All helper functions for this plugin are bundled here
  */
 
+define('CONTENT_SUBSCRIPTIONS_BLOCK', 'content_block_subscription');
+
 /**
  * Check if the user has a subscription with the content
  *
