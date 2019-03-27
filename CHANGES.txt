@@ -1,6 +1,18 @@
 Version history
 ===============
 
+6.0 (2019-03-27):
+
+- added: German translation
+- changed: increased Elgg version requirement to 3.0
+- changed: moved action registration to elgg-plugin.php
+- changed: moved start.php content to Bootstrap class
+- changed: rely on Elgg core comment notifications
+- changed: user settings for content subscriptions reworked
+- removed: adding discussion owner to subscriber list
+- removed: legacy code
+- removed: old migration script
+
 5.1.1 (2018-04-16):
 
 - fixed: correctly verify block relationships
