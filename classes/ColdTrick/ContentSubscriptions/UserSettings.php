@@ -40,7 +40,7 @@ class UserSettings {
 		$valid_methods = array_intersect($selected_methods, $methods);
 		
 		if (!empty($valid_methods)) {
-			elgg_set_plugin_user_setting('notification_settings', implode(',', $methods), $user->guid, 'content_subscriptions');
+			elgg_set_plugin_user_setting('notification_settings', implode(',', $valid_methods), $user->guid, 'content_subscriptions');
 		} else {
 			elgg_unset_plugin_user_setting('notification_settings', $user->guid, 'content_subscriptions');
 		}
