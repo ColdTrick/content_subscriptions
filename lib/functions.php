@@ -263,7 +263,7 @@ function content_subscriptions_get_supported_entity_types() {
 	$result = [
 		'object' => [
 			'blog',
-			'bookmark',
+			'bookmarks',
 			'discussion',
 			'file',
 			'page',
