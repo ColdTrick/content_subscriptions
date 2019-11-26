@@ -1,6 +1,10 @@
 Version history
 ===============
 
+6.0.2 (2019-11-26):
+
+- fixed: set correct subtype for Bookmarks plugin
+
 6.0.1 (2019-07-11):
 
 - fixed: save correct notification settings
