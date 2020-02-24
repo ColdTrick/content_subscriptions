@@ -7,6 +7,10 @@ return [
 	'content_subscriptions:subscribe' => "Subscribe",
 	'content_subscriptions:unsubscribe' => "Unsubscribe",
 	
+	'admin:advanced_statistics:content_subscriptions' => "Content Subscriptions",
+	'advanced_statistics:content_subscriptions:subscribers' => "Subscribers",
+	'advanced_statistics:content_subscriptions:blockers' => "Blockers",
+	
 	'content_subscriptions:settings:description' => "Receive notifications when comments get posted on content you subscribed to",
 	
 	// settings

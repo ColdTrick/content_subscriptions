@@ -25,5 +25,6 @@ class Bootstrap extends DefaultPluginBootstrap {
 		$hooks->registerHandler('get', 'subscriptions', __NAMESPACE__ . '\Subscriptions::verifySubscribersSettings', 400);
 		$hooks->registerHandler('get', 'subscriptions', __NAMESPACE__ . '\Subscriptions::removeUnsubscribedGroupMembers', 999);
 		$hooks->registerHandler('response', 'action:notifications/settings', __NAMESPACE__ . '\UserSettings::notificationSettingsSaveAction');
+		$hooks->registerHandler('register', 'menu:page', __NAMESPACE__ . '\PageMenu::register');
 	}
 }
