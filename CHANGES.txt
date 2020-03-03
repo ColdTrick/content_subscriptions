@@ -1,6 +1,11 @@
 Version history
 ===============
 
+6.1 (2020-03-03):
+
+- added: advanced statistics
+- added: date selection for advanced statistics reports
+
 6.0.2 (2019-11-26):
 
 - fixed: set correct subtype for Bookmarks plugin
