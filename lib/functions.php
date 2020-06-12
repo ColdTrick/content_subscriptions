@@ -40,7 +40,10 @@ function content_subscriptions_check_subscription($entity_guid, $user_guid = 0, 
 			return false;
 		}
 		
-		return content_subscriptions_check_notification_settings($entity->getContainerEntity(), $user_guid, $return_subscription);
+		return elgg_trigger_plugin_hook('check_discussions_subscription', 'content_subscriptions', [
+			'entity' => $entity,
+			'user_guid' => $user_guid,
+		], content_subscriptions_check_notification_settings($entity->getContainerEntity(), $user_guid, $return_subscription));
 	});
 	if ($group_sub !== false) {
 		return $group_sub;
