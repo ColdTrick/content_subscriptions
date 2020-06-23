@@ -1,6 +1,10 @@
 Version history
 ===============
 
+6.2 (2020-06-23):
+
+- added: hook to influence discussion comment subscription check logic
+
 6.1 (2020-03-03):
 
 - added: advanced statistics
